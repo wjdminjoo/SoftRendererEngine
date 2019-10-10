@@ -100,18 +100,18 @@ void SoftRenderer::Update()
 	RSI->DrawPrimitive(4, 6);
 
 	// Draw Basis Vector Arrow
-	RSI->DrawArrowLine(v[0].Position, v[1].Position, LinearColor::Red, 4);
-	RSI->DrawArrowLine(v[0].Position, v[2].Position, LinearColor::Green, 4);
+	/*RSI->DrawArrowLine(v[0].Position, v[1].Position, LinearColor::Red, 4);
+	RSI->DrawArrowLine(v[0].Position, v[2].Position, LinearColor::Green, 4);*/
 
 	RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(120, 50));
 	RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(50, 120));
 	RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-120, 50));
-	//RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-50, 120));
-
+	RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-50, 120));
+	
 	RSI->DrawLine2(ScreenPoint(-10, -10), ScreenPoint(-120, -50));
 	RSI->DrawLine2(ScreenPoint(-10, -10), ScreenPoint(-50, -120));
 	RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(120, -50));
-	//RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(50, -120));
+	RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(50, -120));
 
 
 

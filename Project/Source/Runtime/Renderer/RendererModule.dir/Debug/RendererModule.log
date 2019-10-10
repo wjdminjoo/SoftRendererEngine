@@ -1,4 +1,0 @@
-﻿  WindowsRSI.cpp
-C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Renderer\Private\WindowsRSI.cpp(341): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Renderer\Private\WindowsRSI.cpp(348): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  RendererModule.vcxproj -> C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Output\Win64\Library\Debug\RendererModule.lib

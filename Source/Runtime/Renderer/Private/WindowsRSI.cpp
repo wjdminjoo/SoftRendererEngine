@@ -156,179 +156,173 @@ void WindowsRSI::DrawLine(const Vector2 & InStartPos, const Vector2 & InEndPos, 
 void WindowsRSI::DrawLine2(const ScreenPoint & InStartPos, const ScreenPoint & InEndPos)
 {
 
-	
+
 	int w = InEndPos.X - InStartPos.X;
 	int h = InEndPos.Y - InStartPos.Y;
-	int f = h * 2 - w;
+
+	int fh = h * 2 - w;
 	int f1 = 2 * h;
 	int f2 = (h - w) * 2;
 
 	int fw = w * 2 - h;
 	int f3 = 2 * w;
-	int f4 = (h - w) * 2;
+	int f4 = (w - h) * 2;
 
+	int f5 = 2 * (-w - h);
+	int f6 = 2 * (-h - w);
 	int y = InStartPos.Y;
 	int x = InStartPos.X;
 
-	if (x== 0 && y == 0)
+	if (x == 0 && y == 0)
 	{
 		return;
 	}
 
-	///<summary>
-	/// y = h / w* x + h /w * x0 - y0
-	/// y / h =  1 / w * x +  1 / w *x0 -y0
-	/// y / h = 1 / w * x(1 - y0)
-	/// wy / h = x(1- y0)
-	/// wy = x(h - hy0)
-	/// 0 = x(h - hy0) / wy
-	///</summary>
+
 	SetPixel(ScreenPoint(x, y));
-	while (x <= InEndPos.X || y <= InEndPos.Y)
+	while (abs(x) <= abs(InEndPos.X) || abs(y) <= abs(InEndPos.Y))
 	{
-		if (w > 0 && h > 0) // x
+		if (w > 0 && h > 0) // x y
 		{
 			if (w > h)
 			{
-				if (f < 0)
+				if (fh < 0)
 				{
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f1;
+					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 0.4f).ToColor32());
+					fh += f1;
 				}
 				else
 				{
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f2;
+					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 0.3f).ToColor32());
+					fh += f2;
 					y++;
 				}
 				x++;
 			}
 			else
 			{
-				if (fw > 0)
+				if (fw < 0)
 				{
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f3;
+					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 0.0f).ToColor32());
+					fw += f3;
 				}
 				else
 				{
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f4;
+					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 1.0f, 1.0f).ToColor32());
+					fw += f4;
 					x++;
 				}
 				y++;
 			}
 		}
-		else if (w < 0 && h > 0)// -x
+		else if (w < 0 && h > 0) // -x y)
 		{
-			if (-w > h)
+			if (-w < h)
 			{
-				if (f < 0)
+				if (-fw > 0)
 				{
-					// 수평 유지
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f1;
+
+					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, .6f, 0.2f).ToColor32());
+					fw -= f3;
 				}
 				else
 				{
-					// 한칸 위로
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f2;
+					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.3f, 0.5f).ToColor32());
+					fw += f5;
+					x--;
+				}
+				y++;
+			}
+			else
+			{
+
+				if (-fh < 0)
+				{
+					SetPixel(ScreenPoint(x, y), LinearColor(0.8f, .7f, .7f).ToColor32());
+					fh -= f1;
+				}
+				else
+				{
+					SetPixel(ScreenPoint(x, y), LinearColor(0.2f, 0.6f, 0.7f).ToColor32());
+					fh += f6;
 					y++;
 				}
 				x--;
 			}
-			else if (-w < h)
-			{
-				if (fw > 0)
-				{
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f3;
-				}
-				else
-				{
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f4;
-					x--;
-				}
-				y++;
-			}
 		}
-		else if (w < 0 && h < 0)// -x -y
+		else if (w < 0 && h < 0) // -x -y)
 		{
 			if (-w > -h)
 			{
-				if (f < 0)
+				if (fh > 0)
 				{
-					// 수평 유지
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f1;
+
+					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, .3f, 0.2f).ToColor32());
+					fh += f1;
 				}
 				else
 				{
-					// 한칸 위로
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f2;
+					SetPixel(ScreenPoint(x, y), LinearColor(.4f, 0.3f, 0.5f).ToColor32());
+					fh += f2;
 					y--;
 				}
 				x--;
 			}
-			else if (-w < h)
+			else
 			{
+
 				if (fw > 0)
 				{
-					// 수평 유지
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f3;
+					SetPixel(ScreenPoint(x, y), LinearColor(0.8f, .7f, .3f).ToColor32());
+					fw += f3;
 				}
 				else
 				{
-					// 한칸 위로
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f4;
+					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 0.2f, 0.7f).ToColor32());
+					fw += f4;
 					x--;
 				}
 				y--;
 			}
 		}
-		else if (w > 0 && h < 0)//  x  -y
+		else if (w > 0 && h < 0) // x -y
 		{
 			if (w > -h)
 			{
-				if (f < 0)
+				if (-fh > 0)
 				{
-					
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f1;
+
+					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, .5f, 0.2f).ToColor32());
+					fh -= f1;
 				}
 				else
 				{
-					
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f2;
+					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 0.1f).ToColor32());
+					fh += f6;
 					y--;
 				}
 				x++;
 			}
-			else if (w < -h)
+			else
 			{
-				if (fw < 0)
+
+				if (-fw < 0)
 				{
-					
-					SetPixel(ScreenPoint(x, y), LinearColor(0.0f, 1.0f, 1.0f).ToColor32());
-					f += f3;
+					SetPixel(ScreenPoint(x, y), LinearColor(0.8f, .7f, .7f).ToColor32());
+					fw -= f3;
 				}
 				else
 				{
-					
-					SetPixel(ScreenPoint(x, y), LinearColor(1.0f, 0.5f, 1.0f).ToColor32());
-					f += f4;
+					SetPixel(ScreenPoint(x, y), LinearColor(0.f, 0.6f, 0.7f).ToColor32());
+					fw += f5;
 					x++;
 				}
 				y--;
 			}
 		}
+
 	}
+
 }
 
 void WindowsRSI::DrawArrowLine(const Vector2 & InStartPos, const Vector2 & InEndPos, const LinearColor & InColor, int InThickness)
