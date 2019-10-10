@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\SoftRenderer.cpp" />
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\WindowsApp.cpp" />
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\WindowsPrecompiled.cpp" />
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\WindowsTimer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\InputManager.h" />
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\SoftRenderer.h" />
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\WindowsPrecompiled.h" />
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\WindowsTimer.h" />
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\Res\resource.h">
+      <Filter>Res</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\Res\player.ico">
+      <Filter>Res</Filter>
+    </None>
+    <None Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\Res\player_small.ico">
+      <Filter>Res</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Player\Res\player.rc">
+      <Filter>Res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Res">
+      <UniqueIdentifier>{E0D6F107-302E-353E-A17F-BA6D1A32311E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

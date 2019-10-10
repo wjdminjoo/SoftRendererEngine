@@ -31,6 +31,10 @@ void SoftRenderer::Shutdown()
 		RSI = nullptr;
 	}
 }
+///<summary>
+/// y = a * x + b
+/// y = w / h * x + b
+///</summary>
 
 void SoftRenderer::Update()
 {
@@ -58,19 +62,15 @@ void SoftRenderer::Update()
 	float moveSpeed = 100.0f;
 
 	static Vector2 currentPos = Vector2::Zero;
-	Vector2 deltaPos = Vector2(inputManager.GetXAxis(), inputManager.GetYAxis()) * moveSpeed * FrameSec;
-	currentPos += deltaPos;
+	//Vector2 deltaPos = Vector2(inputManager.GetXAxis(), inputManager.GetYAxis()) * moveSpeed * FrameSec;
+	//currentPos += deltaPos;
 
-	/*Matrix3x3 scalarM(Vector3::UnitX * scalar, Vector3::UnitY * scalar, Vector3::UnitZ);
-	Matrix3x3 rotateM(Vector3(Vector2(cosTheta, sinTheta), false), Vector3(Vector2(-sinTheta, cosTheta), false), Vector3::UnitZ);
-	Matrix3x3 translateM(Vector3::UnitX, Vector3::UnitY, Vector3(currentPos, true));
-*/
 	//TRS
 	// To Do : Define Transform Matrix 3x3
 	static GameObject2D quad;
-	quad.GetTransform().AddPosition(deltaPos);
-	quad.GetTransform().AddScale(Vector2(1.f, 1.f));
-	quad.GetTransform().AddRotation(FrameSec);
+	//quad.GetTransform().AddPosition(deltaPos);
+	//quad.GetTransform().AddScale(Vector2(1.f, 1.f));
+	//quad.GetTransform().AddRotation(FrameSec);
 	Matrix3x3 m = quad.Transform.GetTRS();
 
 	VertexData v[4];
@@ -100,13 +100,20 @@ void SoftRenderer::Update()
 	RSI->DrawPrimitive(4, 6);
 
 	// Draw Basis Vector Arrow
-	//RSI->DrawArrowLine(v[0].Position, v[1].Position, LinearColor::Red, 4);
-	//RSI->DrawArrowLine(v[0].Position, v[2].Position, LinearColor::Green, 4);
+	RSI->DrawArrowLine(v[0].Position, v[1].Position, LinearColor::Red, 4);
+	RSI->DrawArrowLine(v[0].Position, v[2].Position, LinearColor::Green, 4);
 
-	/*Vector2 translatedStart = m * Vector2(0, 1) * scalar;
-	Vector2 translatedEnd = m * Vector2(1, 1) * scalar;
-	RSI->DrawArrowLine(translatedStart, translatedEnd, LinearColor::Red, 4);
-	*/
+	RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(120, 50));
+	RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(50, 120));
+	RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-120, 50));
+	//RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-50, 120));
+
+	RSI->DrawLine2(ScreenPoint(-10, -10), ScreenPoint(-120, -50));
+	RSI->DrawLine2(ScreenPoint(-10, -10), ScreenPoint(-50, -120));
+	RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(120, -50));
+	//RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(50, -120));
+
+
 
 
 }
@@ -159,6 +166,9 @@ void SoftRenderer::PreUpdate()
 	// Draw World Axis
 	RSI->DrawHorizontalLine(0, LinearColor::Red);
 	RSI->DrawVerticalLine(0, LinearColor::Green);
+
+	// Draw Line2
+
 }
 
 void SoftRenderer::PostUpdate()

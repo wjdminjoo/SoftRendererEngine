@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Precompiled.cpp" />
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Private\GameObject2D.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Private\Transform2D.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\ThirdParty\lodepng.cpp">
+      <Filter>ThirdParty</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Precompiled.h" />
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Public\EngineHeaders.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Public\GameObject2D.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\Public\Transform2D.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Now2_210_04\Desktop\새 폴더 (2)\SoftRendererEngine\Source\Runtime\Engine\ThirdParty\lodepng.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Private">
+      <UniqueIdentifier>{331889F5-8C2A-3426-A2F6-D7230665A199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public">
+      <UniqueIdentifier>{FFFDD557-565A-3916-8765-B36C969351AF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{E44D9CD5-5020-3DAD-B011-8C8B7411C661}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

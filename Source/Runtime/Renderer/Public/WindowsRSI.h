@@ -22,7 +22,9 @@ public:
 	virtual void BeginFrame() override;
 	virtual void EndFrame() override;
 	virtual void DrawScreenPoint(const ScreenPoint& InScreenPos, const LinearColor& InColor) override;
+
 	virtual void DrawLine(const Vector2& InStartPos, const Vector2& InEndPos, const LinearColor& InColor, int InThickness = 1) override;
+	virtual void DrawLine2(const ScreenPoint& InStartPos, const ScreenPoint& InEndPos) override;
 	virtual void DrawArrowLine(const Vector2& InStartPos, const Vector2& InEndPos, const LinearColor& InColor, int InThickness = 1) override;
 
 	virtual void DrawVerticalLine(int InX, const LinearColor& InColor) override;

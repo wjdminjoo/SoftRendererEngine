@@ -25,7 +25,9 @@ public:
 
 	virtual void DrawScreenPoint(const ScreenPoint& InScreenPos, const LinearColor& InColor) = 0;
 	virtual void DrawLine(const Vector2& InStartPos, const Vector2& InEndPos, const LinearColor& InColor, int InThickness = 1) = 0;
+	virtual void DrawLine2(const ScreenPoint& InStartPos, const ScreenPoint& InEndPos) = 0;
 	virtual void DrawArrowLine(const Vector2& InStartPos, const Vector2& InEndPos, const LinearColor& InColor, int InThickness = 1) = 0;
+
 	virtual void DrawVerticalLine(int InX, const LinearColor& InColor) = 0;
 	virtual void DrawHorizontalLine(int InY, const LinearColor& InColor) = 0;
 	virtual void DrawHorizontalLine(const ScreenPoint& InStartPos, const ScreenPoint& InEndPos, const LinearColor& InColor) = 0;
