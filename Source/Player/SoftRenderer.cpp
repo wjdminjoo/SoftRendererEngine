@@ -62,18 +62,18 @@ void SoftRenderer::Update()
 	float moveSpeed = 100.0f;
 
 	static Vector2 currentPos = Vector2::Zero;
-	//Vector2 deltaPos = Vector2(inputManager.GetXAxis(), inputManager.GetYAxis()) * moveSpeed * FrameSec;
-	//currentPos += deltaPos;
+	Vector2 deltaPos = Vector2(inputManager.GetXAxis(), inputManager.GetYAxis()) * moveSpeed * FrameSec;
+	currentPos += deltaPos;
 
 	//TRS
 	// To Do : Define Transform Matrix 3x3
 	static GameObject2D quad;
-	//quad.GetTransform().AddPosition(deltaPos);
+	quad.GetTransform().AddPosition(deltaPos);
 	//quad.GetTransform().AddScale(Vector2(1.f, 1.f));
 	//quad.GetTransform().AddRotation(FrameSec);
 	Matrix3x3 m = quad.Transform.GetTRS();
 
-	VertexData v[4];
+	/*VertexData v[4];
 	v[0].Position = (m * Vector3(Vector2::Zero, true)).ToVector2();
 	v[0].Color = vectorSpaceColor;
 
@@ -84,7 +84,7 @@ void SoftRenderer::Update()
 	v[2].Color = vectorSpaceColor;
 
 	v[3].Position = (m * Vector3(Vector2::UnitX + Vector2::UnitY, true)).ToVector2();
-	v[3].Color = vectorSpaceColor;
+	v[3].Color = vectorSpaceColor;*/
 
 	int i[6];
 	i[0] = 0;
@@ -95,15 +95,15 @@ void SoftRenderer::Update()
 	i[5] = 3;
 
 	// Draw Call
-	RSI->SetVertexBuffer(v);
+	/*RSI->SetVertexBuffer(v);
 	RSI->SetIndexBuffer(i);
-	RSI->DrawPrimitive(4, 6);
+	RSI->DrawPrimitive(4, 6);*/
 
 	// Draw Basis Vector Arrow
 	/*RSI->DrawArrowLine(v[0].Position, v[1].Position, LinearColor::Red, 4);
 	RSI->DrawArrowLine(v[0].Position, v[2].Position, LinearColor::Green, 4);*/
 
-	RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(120, 50));
+	/*RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(120, 50));
 	RSI->DrawLine2(ScreenPoint(10, 10), ScreenPoint(50, 120));
 	RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-120, 50));
 	RSI->DrawLine2(ScreenPoint(-10, 10), ScreenPoint(-50, 120));
@@ -111,11 +111,23 @@ void SoftRenderer::Update()
 	RSI->DrawLine2(ScreenPoint(-10, -10), ScreenPoint(-120, -50));
 	RSI->DrawLine2(ScreenPoint(-10, -10), ScreenPoint(-50, -120));
 	RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(120, -50));
-	RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(50, -120));
+	RSI->DrawLine2(ScreenPoint(10, -10), ScreenPoint(50, -120));*/
+	
+	VertexData v[4];
+	v[0].Position = Vector2(-50.f, -50.f);
+	v[1].Position = Vector2(-50.f, 50.f);
+	v[2].Position = Vector2(50.f, 50.f);
+	v[3].Position = Vector2(50.f, -50.f);
 
+	static int indexCount = 6;
+	int index[6] = { 0, 1, 2, 0, 2, 3 };
+	int triangleCount = indexCount / 3;
 
-
-
+	for (int i = 0; i < triangleCount; i++) {
+		RSI->DrawLine2(ScreenPoint(v[index[i * 3]].Position), ScreenPoint(v[index[i * 3 + 1]].Position));
+		//RSI->DrawLine2(ScreenPoint(v[index[i * 3]].Position), ScreenPoint(v[index[i * 3 + 2]].Position));
+		//RSI->DrawLine2(ScreenPoint(v[index[i * 3 + 1]].Position), ScreenPoint(v[index[i * 3 + 2]].Position));
+	}
 }
 
 void SoftRenderer::PreUpdate()
