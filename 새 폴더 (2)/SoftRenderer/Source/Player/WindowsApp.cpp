@@ -96,12 +96,12 @@ static void InitInstance(HINSTANCE hInstance, LPCTSTR lpCmdLine, int nCmdShow)
 	wcex.lpszClassName = className;
 	RegisterClassEx(&wcex);
 
-	hMainWnd = CreateAppWindow(szTitle, className, 1600, 900, false);
+	hMainWnd = CreateAppWindow(szTitle, className, 800, 600, false);
 }
 
 static HWND CreateAppWindow(const TCHAR *title, const TCHAR *classname, int width, int height, bool fullscreen) 
 {
-	DisplaySetting::Inst().SetSize(ScreenPoint(1600, 900));
+	DisplaySetting::Inst().SetSize(ScreenPoint(800, 600));
 
 	RECT rect;
 	rect.left = 0;

@@ -86,6 +86,37 @@ void WindowsRSI::DrawLine(const Vector2 & InStartPos, const Vector2 & InEndPos, 
 
 		}
 
+		//int dx = Math::CeilToInt(Math::Abs(InEndPos.X - InStartPos.X));
+		//int sx = (InStartPos.X < InEndPos.X) ? 1 : -1;
+		//int dy = Math::FloorToInt(-Math::Abs(InEndPos.Y - InStartPos.Y));
+		//int sy = (InStartPos.Y < InEndPos.Y) ? 1 : -1;
+		//int err = dx + dy;
+
+		//int currentX = Math::CeilToInt(InStartPos.X);
+		//int currentY = Math::FloorToInt(InStartPos.Y);
+		//while (true)
+		//{
+		//	SetPixelWithAlpha(ScreenPoint(currentX, currentY), InColor);
+
+		//	if (currentX == InEndPos.X && currentY == InEndPos.Y)
+		//	{
+		//		break;
+		//	}
+
+		//	int e2 = err * 2;
+		//	if (e2 >= dy)
+		//	{
+		//		err += dy;
+		//		currentX += sx;
+		//	}
+
+		//	if (e2 <= dx)
+		//	{
+		//		err += dx;
+		//		currentY += sy;
+		//	}
+		//}
+
 		return;
 	}
 	
@@ -126,6 +157,19 @@ void WindowsRSI::DrawLine2(const ScreenPoint & InStartPos, const ScreenPoint & I
 {
 	int w = InEndPos.X - InStartPos.X;
 	int h = InEndPos.Y - InStartPos.Y;
+	//if (w == 0 || h == 0)
+	//{
+	//	if (h == 0)
+	//	{
+	//		DrawHorizontalLine(InStartPos, InEndPos, LinearColor(1.f, 0.f, 1.f).ToColor32());
+	//	}
+	//	else
+	//	{
+
+	//	}
+
+	//	return;
+	//}
 
 	bool slope = (Math::Abs(w) >= Math::Abs(h));
 	int dirx = w > 0 ? 1 : -1;

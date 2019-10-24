@@ -36,23 +36,28 @@ void SoftRenderer::Update()
 {
 	if (RSI == nullptr) return;
 	
-	static float moveSpeed = 100;
-	static float rotSpeed = 180;
-	static Vector2 currentPos = Vector2::Zero;
-	static float currentAngle = 0.f;
-	Vector2 deltaPos = Vector2(InputManager.GetXAxis(), 0.f) * moveSpeed * FrameSec;
-	float deltaAngle = InputManager.GetYAxis() * rotSpeed * FrameSec;
-	currentPos += deltaPos;
-	currentAngle += deltaAngle;
-	float rad = Math::Deg2Rad(currentAngle);
-
-	Matrix4x4 tMat;
-	Matrix4x4 rMat;
+	static float moveSpeed = 300;
+	static float turnSpeed = 180;
+	static float currentZ = 0.f;
+	static float currentYaw = 0.f;
+	static float currentRoll = 0.f;
+	static float currentPitch = 0.f;
+	currentYaw += InputManager.GetXAxis() * turnSpeed * FrameSec;
+	currentZ += InputManager.GetYAxis() * moveSpeed * FrameSec;
+	Vector3 currentPos(0.f, 0.f, currentZ);
+	float cy, sy, cr, sr, cp, sp;
+	Math::GetSinCos(sy, cy, currentYaw);
+	Math::GetSinCos(cr, sr, currentRoll);
+	Math::GetSinCos(cp, sp, currentPitch);
+	Matrix4x4 tMat(Vector4::UnitX, Vector4::UnitY, Vector4::UnitZ, Vector4(currentPos));
+	Matrix4x4 rMat(Vector4(cy*cr + sr * sy*sp, cp*sr, sy*cr + cy * -sp * sr, 0.f),
+		Vector4(cy*-sr + sy * sp*cr, cr*cp, -sr * sy + cr * cy*-sp, 0.f), 
+		Vector4(-sy * cp, sp, cy*cp, 0.f),
+		Vector4::UnitW);
 	Matrix4x4 sMat(Vector4::UnitX * 100, Vector4::UnitY * 100, Vector4::UnitZ * 100, Vector4::UnitW);
 	Matrix4x4 mMat = tMat * rMat * sMat;
-
-	Vector3 cameraPosition(Vector3(-100.f, 0.f, 100.f));
-	Vector3 viewZUnit = (cameraPosition - Vector3::Zero).Normalize();
+	Vector3 cameraPosition(Vector3(0.f, 500.f, -500.f));
+	Vector3 viewZUnit = (cameraPosition - currentPos).Normalize();
 	Vector3 viewXUnit = Vector3::UnitY.Cross(viewZUnit).Normalize();
 	if (viewXUnit.IsZero())
 	{
@@ -63,11 +68,9 @@ void SoftRenderer::Update()
 	Vector4 xAxis(viewXUnit, false);
 	Vector4 yAxis(viewYUnit, false);
 	Matrix4x4 virMat(xAxis, yAxis, zAxis, Vector4::UnitW);
-
-	Matrix4x4 vitMat;
+	Matrix4x4 vitMat(Vector4::UnitX, Vector4::UnitY, Vector4::UnitZ, Vector4(-cameraPosition, true));
 	Matrix4x4 vMat = virMat * vitMat;
-	Matrix4x4 pMat;
-	Matrix4x4 finalMat = pMat * vMat * mMat;
+	Matrix4x4 finalMat = vMat * mMat;
 	const int vertexCount = 24;
 
 
@@ -105,6 +108,11 @@ void SoftRenderer::Update()
 		VertexData(Vector3(-0.5f, -0.5f, -0.5f))
 	};
 
+	float fovInDegree = 60.f;
+	float fovRadian = Math::Deg2Rad(fovInDegree * 0.5f);
+	float d = 1.f / tanf(fovRadian);
+	float a = (float)DisplaySetting::Inst().GetSize().X / (float)DisplaySetting::Inst().GetSize().Y;
+
 	for (int vi = 0; vi < vertexCount; vi++)
 	{
 		v[vi].Position = finalMat * v[vi].Position;
@@ -119,12 +127,28 @@ void SoftRenderer::Update()
 	 16, 18, 17, 16, 19, 18,
 	 20, 22, 21, 20, 23, 22
 	};
-
 	for (int t = 0; t < triangleCount; t++)
 	{
-		RSI->DrawLine2(ScreenPoint(v[i[t * 3]].Position.ToVector2()), ScreenPoint(v[i[t * 3 + 1]].Position.ToVector2()));
-		RSI->DrawLine2(ScreenPoint(v[i[t * 3]].Position.ToVector2()), ScreenPoint(v[i[t * 3 + 2]].Position.ToVector2()));
-		RSI->DrawLine2(ScreenPoint(v[i[t * 3 + 1]].Position.ToVector2()), ScreenPoint(v[i[t * 3 + 2]].Position.ToVector2()));
+		Vector4 tp[3] = { v[i[t * 3]].Position , v[i[t * 3 + 1]].Position, v[i[t * 3 + 2]].Position };
+		Vector3 viewVector = Vector3(0.f, 0.f, -1.f);
+		Vector3 edge1 = (tp[1] - tp[0]).ToVector3();
+		Vector3 edge2 = (tp[2] - tp[0]).ToVector3();
+		Vector3 faceNormal = edge1.Cross(edge2).Normalize();
+		if (viewVector.Dot(faceNormal) > 0.f)
+		{
+			continue;
+		}
+		for (int ti = 0; ti < 3; ti++)
+		{
+			float viewZ = -tp[ti].Z;
+			tp[ti].Y = tp[ti].Y * d / viewZ;
+			tp[ti].X = tp[ti].X * d / (viewZ * a);
+			tp[ti].X *= (DisplaySetting::Inst().GetSize().X * 0.5f);
+			tp[ti].Y *= (DisplaySetting::Inst().GetSize().Y * 0.5f);
+		}
+		RSI->DrawLine2(ScreenPoint(tp[0]), ScreenPoint(tp[1]));
+		RSI->DrawLine2(ScreenPoint(tp[0]), ScreenPoint(tp[2]));
+		RSI->DrawLine2(ScreenPoint(tp[1]), ScreenPoint(tp[2]));
 	}
 }
 
