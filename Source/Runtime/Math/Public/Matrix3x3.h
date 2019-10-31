@@ -10,8 +10,6 @@ public:
 	Matrix3x3(float In00, float In01, float In02, float In10, float In11, float In12, float In20, float In21, float In22);
 
 	FORCEINLINE void SetIdentity();
-	FORCEINLINE void SetRotation(float InRadian);
-	FORCEINLINE void SetScale(Vector3 InScale);
 	FORCEINLINE Matrix3x3 Tranpose() const;
 
 	FORCEINLINE const Vector3& operator[](int InIndex) const;
@@ -26,9 +24,14 @@ public:
 		return InV;
 	}
 
-	FORCEINLINE Matrix3x3 operator*(float InS) const;
+	FORCEINLINE Vector2 operator*(const Vector2& InV) const;
+	FORCEINLINE friend Vector2 operator*=(Vector2& InV, const Matrix3x3& InM)
+	{
+		InV = InM * InV;
+		return InV;
+	}
 
-	static const Matrix3x3 Identity;
+	FORCEINLINE Matrix3x3 operator*(float InS) const;
 
 private:
 	Vector3 Cols[3];
@@ -36,21 +39,9 @@ private:
 
 FORCEINLINE void Matrix3x3::SetIdentity()
 {
-	*this = Matrix3x3::Identity;
-}
-
-FORCEINLINE void Matrix3x3::SetRotation(float InRadian)
-{
-	Cols[0] = Vector3(cosf(InRadian), sinf(InRadian), 0.f);
-	Cols[1] = Vector3(-sinf(InRadian), cosf(InRadian), 0.f);
-	Cols[2] = Vector3(0.f, 0.f, 1.f);
-}
-
-FORCEINLINE void Matrix3x3::SetScale(Vector3 InScale)
-{
-	Cols[0] = Vector3::UnitX * InScale.X;
-	Cols[1] = Vector3::UnitY * InScale.Y;
-	Cols[2] = Vector3::UnitZ * InScale.Z;
+	Cols[0] = Vector3::UnitX;
+	Cols[1] = Vector3::UnitY;
+	Cols[2] = Vector3::UnitZ;
 }
 
 FORCEINLINE Matrix3x3 Matrix3x3::Tranpose() const
@@ -61,7 +52,6 @@ FORCEINLINE Matrix3x3 Matrix3x3::Tranpose() const
 		Vector3(Cols[0].Z, Cols[1].Z, Cols[2].Z)
 	);
 }
-
 
 FORCEINLINE const Vector3& Matrix3x3::operator[](int InIndex) const
 {
@@ -74,16 +64,17 @@ FORCEINLINE Vector3& Matrix3x3::operator[](int InIndex)
 }
 
 
-
 FORCEINLINE Matrix3x3 Matrix3x3::operator*(const Matrix3x3 &InM) const
 {
-	Matrix3x3 tpMat = Tranpose(); // 전체행렬 :: Tranpose
+	Matrix3x3 tpMat = Tranpose();
 	return Matrix3x3(
 		Vector3(tpMat[0].Dot(InM[0]), tpMat[1].Dot(InM[0]), tpMat[2].Dot(InM[0])),
 		Vector3(tpMat[0].Dot(InM[1]), tpMat[1].Dot(InM[1]), tpMat[2].Dot(InM[1])),
 		Vector3(tpMat[0].Dot(InM[2]), tpMat[1].Dot(InM[2]), tpMat[2].Dot(InM[2]))
-		);
+	);
+
 }
+
 
 FORCEINLINE Vector3 Matrix3x3::operator*(const Vector3& InV) const
 {
@@ -93,6 +84,14 @@ FORCEINLINE Vector3 Matrix3x3::operator*(const Vector3& InV) const
 		tpMat[1].Dot(InV),
 		tpMat[2].Dot(InV)
 	);
+}
+
+FORCEINLINE Vector2 Matrix3x3::operator*(const Vector2& InV) const
+{
+	Vector3 V3(InV);
+	V3 *= *this;
+
+	return V3.ToVector2();
 }
 
 FORCEINLINE Matrix3x3 Matrix3x3::operator*(float InS) const

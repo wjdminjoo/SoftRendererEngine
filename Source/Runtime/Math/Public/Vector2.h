@@ -1,13 +1,13 @@
 #pragma once
 
 #include "CoreDefinition.h"
-#include <math.h>
 
 struct Vector2
 {
 public:
 	Vector2() { }
-	constexpr FORCEINLINE Vector2(float InX, float InY) : X(InX), Y(InY) { }
+	FORCEINLINE Vector2(int InX, int InY) : X((float)InX), Y((float)InY) { }
+	FORCEINLINE Vector2(float InX, float InY) : X(InX), Y(InY) { }
 
 	FORCEINLINE float SizeSquared() const;
 	FORCEINLINE float Dot(const Vector2& InV) const;
@@ -29,7 +29,6 @@ public:
 
 	static const Vector2 UnitX;
 	static const Vector2 UnitY;
-
 	static const Vector2 One;
 	static const Vector2 Zero;
 
@@ -62,7 +61,6 @@ FORCEINLINE Vector2& Vector2::operator+=(const Vector2& InV)
 {
 	X += InV.X;
 	Y += InV.Y;
-
 	return *this;
 }
 
