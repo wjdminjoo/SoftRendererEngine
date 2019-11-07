@@ -343,10 +343,148 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 	}*/
 
 	const int triangleCount = InIndexSize / 3;
+
 	for (int i = 0; i < triangleCount; i++) {
 		VertexData tp[3] = { VertexBuffer[IndexBuffer[i * 3]], VertexBuffer[IndexBuffer[i * 3 + 1]], VertexBuffer[IndexBuffer[i * 3 + 2]] };
-		DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), tp[0].Color);
+
+
+		ScreenPoint tPoint[4] = {
+			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[0].Position.ToVector2()),
+			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[1].Position.ToVector2()),
+			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[2].Position.ToVector2()),
+			ScreenPoint(0, 0)
+		};
+		// 1. y값으로 점을 sorting
+		// 2. 삼각형이 Top-Flat, Bottom-Flat, 무작위 인지 파악
+		// 3. Top-Flat은 Top-Flat방식으로 아래부터 위로 그리기
+		// 4. Bottom-Flat은 Bottom-Flat 방식으로 위에서 아래로 그리기
+		// 5. 무작위는 점을 하나 추가하고 Bottom-Flat과 Top-Flat으로 나눠그리기
+		if (tp[0].Position.Y >= tp[1].Position.Y){
+			if (tp[0].Position.Y >= tp[2].Position.Y) {
+				// 0, 1, 2
+				if (tp[1].Position.Y >= tp[2].Position.Y) {
+					// 0, 1, 2
+				}
+				else {
+					// 0, 2, 1
+					VertexData temp = tp[1];
+					tp[1] = tp[2];
+					tp[2] = temp;
+
+				}
+			}
+			else {
+				// 2, 0, 1
+				VertexData temp = tp[0];
+				tp[0] = tp[2];
+				tp[2] = tp[1];
+				tp[1] = temp;
+			}
+		}
+		else{
+			if (tp[0].Position.Y >= tp[2].Position.Y) {
+				// 1, 2, 0
+				VertexData temp = tp[0];
+				tp[0] = tp[1];
+				tp[1] = tp[2];
+				tp[2] = temp;
+				if (tp[1].Position.Y >= tp[2].Position.Y) {
+					// 1, 2, 0
+				}
+				else {
+					// 2, 1, 0
+					VertexData temp = tp[0];
+					tp[0] = tp[1];
+					tp[1] = temp;
+				}
+			}
+			else {
+				// 1, 0, 2
+				VertexData temp = tp[1];
+				tp[1] = tp[2];
+				tp[2] = temp;
+			}
+		}
+
+		if (tp[0].Position.Y == tp[1].Position.Y) {
+			// Top-Flat Triangle
+			//tp[2] tp[0] 기울기
+			float inclination1 = tp[2].Position.Y - tp[0].Position.Y / tp[2].Position.X - tp[0].Position.X;
+			//tp[2] tp[1] 기울기
+			float inclination2 = tp[2].Position.Y - tp[1].Position.Y / tp[2].Position.X - tp[1].Position.X;
+
+		}
+		else {
+			if (tp[1].Position.Y == tp[2].Position.Y) {
+				// Bottom-Flat Triangle
+
+			}
+			else {
+				// half Triangle
+				
+				
+			}
+		}
+
+		//WireFrame
+
+		/*DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), tp[0].Color);
 		DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), tp[1].Color);
-		DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), tp[2].Color);
+		DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), tp[2].Color);*/
+		//}
+
+
+		//Fill Triangle
+		//Find Min, Max ScreenPoint;
+
+
+		// 삼각형 칠하기.
+		// 단점 : 삼각형 2배 크기를 무조건 돌림.
+		//Vector2 minPos(INFINITY, INFINITY);
+		//Vector2 maxPos(-INFINITY, -INFINITY);
+
+		/*for (int i = 0; i < 3; i++) {
+			if (tp[i].Position.X < minPos.X) {
+				minPos.X = tp[i].Position.X;
+			}
+			if (tp[i].Position.Y < minPos.Y) {
+				minPos.Y = tp[i].Position.Y;
+			}
+			if (tp[i].Position.X > maxPos.X) {
+				maxPos.X = tp[i].Position.X;
+			}
+			if (tp[i].Position.Y > maxPos.Y) {
+				maxPos.Y = tp[i].Position.Y;
+			}
+		}
+		ScreenPoint minScreenPos = ScreenPoint::ToScreenCoordinate(ScreenSize, minPos);
+		ScreenPoint maxScreenPos = ScreenPoint::ToScreenCoordinate(ScreenSize, maxPos);*/
+
+		/*Vector2 u = (tp[1].Position - tp[0].Position).ToVector2();
+		Vector2 v = (tp[2].Position - tp[0].Position).ToVector2();
+
+		float Dotuv = u.Dot(v);
+		float Dotvv = v.Dot(v);
+		float Dotuu = u.Dot(u);
+
+		float invDenominator = 1.f / (Dotuu * Dotvv - Dotuv * Dotuv);
+		for (int x = minScreenPos.X; x <= maxScreenPos.X; ++x) {
+			for (int y = maxScreenPos.Y; y <= minScreenPos.Y; ++y) {
+				ScreenPoint testPoint(x, y);
+				Vector2 testPos = testPoint.ToVectorCoordinate(ScreenSize);
+
+				Vector2 w = testPos - tp[0].Position.ToVector2();
+				float Dotwu = w.Dot(u);
+				float Dotwv = w.Dot(v);
+
+				float s = (Dotwu * Dotvv - Dotwv * Dotuv) * invDenominator;
+				float t = (Dotwv * Dotuu - Dotwu * Dotuv) * invDenominator;
+
+				if (s >= 0 && s <= 1.0f && t >= 0.f && t <= 1.f)
+					SetPixel(testPoint, LinearColor::Black);
+
+
+			}
+		}*/
 	}
 }

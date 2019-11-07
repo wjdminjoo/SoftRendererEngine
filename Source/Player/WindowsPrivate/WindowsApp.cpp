@@ -3,10 +3,12 @@
 #include "WindowsRSI.h"
 #include "WindowsPlayer.h"
 #include "SoftRenderer.h"
+#define XSIZE 1600
+#define YSIZE 920
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-	ScreenPoint defScreenSize(800, 600);
+	ScreenPoint defScreenSize(XSIZE, YSIZE);
 	SoftRenderer renderer(new WindowsRSI());
 	WindowsPlayer::gOnResizeFunc = [&renderer](const ScreenPoint& InNewScreenSize) { 
 		if (InNewScreenSize.HasZero()) {
