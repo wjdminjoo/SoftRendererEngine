@@ -32,7 +32,7 @@ void WindowsRSI::SetBlendingMode(BlendingModes InNewBlendingMode)
 	//}
 }
 
-void WindowsRSI::Clear(const LinearColor & InClearColor)
+void WindowsRSI::Clear(const LinearColor& InClearColor)
 {
 	FillBuffer(InClearColor.ToColor32());
 	ClearDepthBuffer();
@@ -52,7 +52,7 @@ void WindowsRSI::DrawPoint(const Vector2& InVectorPos, const LinearColor& InColo
 	SetPixel(ScreenPoint::ToScreenCoordinate(ScreenSize, InVectorPos), InColor);
 }
 
-void WindowsRSI::DrawFullVerticalLine(int InX, const LinearColor & InColor)
+void WindowsRSI::DrawFullVerticalLine(int InX, const LinearColor& InColor)
 {
 	if (InX < 0 || InX >= ScreenSize.X)
 	{
@@ -67,7 +67,7 @@ void WindowsRSI::DrawFullVerticalLine(int InX, const LinearColor & InColor)
 	return;
 }
 
-void WindowsRSI::DrawFullHorizontalLine(int InY, const LinearColor & InColor)
+void WindowsRSI::DrawFullHorizontalLine(int InY, const LinearColor& InColor)
 {
 	if (InY < 0 || InY >= ScreenSize.Y)
 	{
@@ -322,12 +322,12 @@ void WindowsRSI::DrawLine(const Vector2& InStartPos, const Vector2& InEndPos, co
 	//}
 }
 
-void WindowsRSI::SetVertexBuffer(VertexData * InVertexData)
+void WindowsRSI::SetVertexBuffer(VertexData* InVertexData)
 {
 	VertexBuffer = InVertexData;
 }
 
-void WindowsRSI::SetIndexBuffer(const int * InIndexData)
+void WindowsRSI::SetIndexBuffer(const int* InIndexData)
 {
 	IndexBuffer = InIndexData;
 }
@@ -346,6 +346,12 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[2].Position.ToVector2()),
 			ScreenPoint(0, 0)
 		};
+		if (tp[0].Position.Y == tp[1].Position.Y == tp[2].Position.Y) {
+			DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Black);
+			DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Black);
+			DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Black);
+			return;
+		}
 		// 1. y값으로 점을 sorting
 		// 2. 삼각형이 Top-Flat, Bottom-Flat, 무작위 인지 파악
 		// 3. Top-Flat은 Top-Flat방식으로 아래부터 위로 그리기
@@ -425,65 +431,50 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 			}
 
 		}
-		else {
-			if (tp[1].Position.Y == tp[2].Position.Y) {
-				// Bottom-Flat Triangle
-
-				float slopeLeft = (tp[2].Position.X - tp[0].Position.X) / (tp[2].Position.Y - tp[0].Position.Y);
-				float slopeRight = (tp[1].Position.X - tp[0].Position.X) / (tp[1].Position.Y - tp[0].Position.Y);
-
-				DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Red);
-				DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Red);
-				DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Red);
-
-				float y = tp[0].Position.Y;
-
-				while (y > tp[2].Position.Y) {
-					float leftX = (tp[0].Position.Y - y) * slopeLeft + tp[2].Position.X;
-					float rightX = (tp[0].Position.Y - y) * slopeRight + tp[1].Position.X;
-
-					ScreenPoint spLeft = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(leftX, y));
-					ScreenPoint spRight = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(rightX, y));
-
-					if (spRight.X < spLeft.X) {
-						ScreenPoint temp = spLeft;
-						spLeft = spRight;
-						spRight = temp;
-					}
-
-					for (int x = spLeft.X; x <= spRight.X; x++) {
-						SetPixel(ScreenPoint(x, spLeft.Y), LinearColor::Red);
-					}
-					y -= 1.f;
-				}
+		else if (tp[1].Position.Y == tp[2].Position.Y) {
+			// Bottom-Flat Triangle
+			if (tp[2].Position.X > tp[1].Position.X)
+			{
+				VertexData temp = tp[1];
+				tp[1] = tp[2];
+				tp[2] = temp;
 			}
-			else {
-				// half Triangle
 
-			// Top-Flat Triangle
-				float slopeLeft = (tp[0].Position.X - tp[2].Position.X) / (tp[0].Position.Y - tp[2].Position.Y);
-				float slopeRight = (tp[1].Position.X - tp[2].Position.X) / (tp[1].Position.Y - tp[2].Position.Y);
 
-				DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Green);
-				DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Green);
-				DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Green);
+			float slopeLeft = (tp[2].Position.X - tp[0].Position.X) / (tp[2].Position.Y - tp[0].Position.Y);
+			float slopeRight = (tp[1].Position.X - tp[0].Position.X) / (tp[1].Position.Y - tp[0].Position.Y);
 
-				float y = tp[2].Position.Y;
+			DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Red);
+			DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Red);
+			DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Red);
 
-				while (y < tp[0].Position.Y) {
-					float leftX = (y - tp[2].Position.Y) * slopeLeft + tp[2].Position.X;
-					float rightX = (y - tp[2].Position.Y) * slopeRight + tp[2].Position.X;
+			float y = tp[0].Position.Y;
 
-					ScreenPoint spLeft = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(leftX, y));
-					ScreenPoint spRight = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(rightX, y));
+			while (y > tp[2].Position.Y) {
+				float leftX = (y - tp[0].Position.Y) * slopeLeft + tp[0].Position.X;
+				float rightX = (y - tp[0].Position.Y) * slopeRight + tp[0].Position.X;
 
-					for (int x = spLeft.X; x <= spRight.X; x++) {
-						SetPixel(ScreenPoint(x, spLeft.Y), LinearColor::Green);
-					}
-					y += 1.f;
+				ScreenPoint spLeft = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(leftX, y));
+				ScreenPoint spRight = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(rightX, y));
+
+
+
+				for (int x = spLeft.X; x <= spRight.X; x++) {
+					SetPixel(ScreenPoint(x, spLeft.Y), LinearColor::Red);
 				}
-
+				y -= 1.f;
 			}
 		}
+		else {
+			// 헤론 공식
+			// sqr(s(s-a)(s-b)(s-c)) = 1/2bh
+			float aSide = sqrt((tp[0].Position.X - tp[1].Position.X) * 2 + (tp[0].Position.Y - tp[1].Position.Y) * 2);
+			float bSide = (Math::Abs(tp[0].Position.X) + Math::Abs(tp[2].Position.X)) / (Math::Abs(tp[0].Position.Y) + Math::Abs(tp[2].Position.Y));
+			float cSide = (Math::Abs(tp[1].Position.Y) - Math::Abs(tp[2].Position.Y)) / (Math::Abs(tp[1].Position.X) - Math::Abs(tp[2].Position.X));
+			float sSide = (aSide + bSide + cSide) * 0.5f;
+			float height = (sqrt(sSide * (sSide - aSide) * (sSide - bSide) * (sSide - cSide))) * 0.5f * bSide;
+			
+		}
+
 	}
 }

@@ -61,17 +61,27 @@ void SoftRendererImpl2D::RenderFrameImpl()
 	Matrix4x4 rotMat(Vector3(ca, sa, 0.f), Vector3(-sa, ca, 0.f), Vector4::UnitZ, Vector4::UnitW);
 
 	const int vertexCount = 4;
-	VertexData v[vertexCount] = {
-	 VertexData(Vector4(0.5f, 0.5f, 0.f) * 10.f, LinearColor::Red),
-	 VertexData(Vector4(2.5f, -2.5f, 0.f) * 10.f, LinearColor::Blue),
-	 VertexData(Vector4(-2.5f, -2.5f, 0.f) * 10.f, LinearColor::Green),
-	 VertexData(Vector4(0.6f, -1.2f, 0.f) * 10.f, LinearColor::Black)
-	}; /*VertexData v[vertexCount] = {
-	 VertexData(rotMat * Vector4(-0.5f, -0.7f, 0.f) * 100.f, LinearColor::Red),
-	 VertexData(rotMat * Vector4(-0.7f, 0.9f, 0.f) * 100.f, LinearColor::Blue),
-	 VertexData(rotMat * Vector4(0.5f, 0.6f, 0.f) * 100.f, LinearColor::Green),
-	 VertexData(rotMat * Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
+	// Bottom - Flat
+	/*VertexData v[vertexCount] = {
+	 VertexData(Vector4(0.5f, 0.5f, 0.f) * 100.f, LinearColor::Red),
+	 VertexData(Vector4(2.5f, -2.5f, 0.f) * 100.f, LinearColor::Blue),
+	 VertexData(Vector4(-2.5f, -2.5f, 0.f) * 100.f, LinearColor::Green),
+	 VertexData(Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
+	}; */
+	// Top - Flat
+	/*VertexData v[vertexCount] = {
+	 VertexData(Vector4(-2.5f, 2.5f, 0.f) * 100.f, LinearColor::Red),
+	 VertexData(Vector4(2.5f, 2.5f, 0.f) * 100.f, LinearColor::Blue),
+	 VertexData(Vector4(2.5f, -2.5f, 0.f) * 100.f, LinearColor::Green),
+	 VertexData(Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
 	};*/
+	// Random - Flat
+	VertexData v[vertexCount] = {
+	 VertexData(Vector4(-0.5f, -0.7f, 0.f) * 100.f, LinearColor::Red),
+	 VertexData(Vector4(-0.7f, 0.9f, 0.f) * 100.f, LinearColor::Blue),
+	 VertexData(Vector4(0.5f, 0.6f, 0.f) * 100.f, LinearColor::Green),
+	 VertexData(Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
+	};
 
 	const int triangleCount = 2;
 	const int indexCount = triangleCount * 3;
