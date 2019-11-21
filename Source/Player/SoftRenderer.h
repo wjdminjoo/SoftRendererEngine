@@ -57,7 +57,7 @@ private:
 	float ElapsedTime = 0.f;
 	float AverageFPS = 0.f;
 	float FrameFPS = 0.f;
-
+	
 	// Renderer Interface
 	std::unique_ptr<RenderingSoftwareInterface> RSI;
 

@@ -3,8 +3,8 @@
 #include "WindowsRSI.h"
 #include "WindowsPlayer.h"
 #include "SoftRenderer.h"
-#define XSIZE 1600
-#define YSIZE 920
+#define XSIZE 840
+#define YSIZE 600
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {

@@ -22,7 +22,7 @@ private:
 	// 2D Grid Options
 	int Grid2DUnit = 10;
 	ScreenPoint ScreenSize;
-
+	float Angle = 0.5f;
 	// Input Manager
 	InputManager InputManager;
 };
