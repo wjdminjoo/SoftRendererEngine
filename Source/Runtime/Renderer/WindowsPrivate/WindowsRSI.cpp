@@ -346,7 +346,14 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[2].Position.ToVector2()),
 			ScreenPoint(0, 0)
 		};
+
 		if (tp[0].Position.Y == tp[1].Position.Y == tp[2].Position.Y) {
+			DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Black);
+			DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Black);
+			DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Black);
+			return;
+		}
+		else if (tp[0].Position.X == tp[1].Position.X == tp[2].Position.X) {
 			DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Black);
 			DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Black);
 			DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Black);
@@ -357,10 +364,11 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 		// 3. Top-Flat은 Top-Flat방식으로 아래부터 위로 그리기
 		// 4. Bottom-Flat은 Bottom-Flat 방식으로 위에서 아래로 그리기
 		// 5. 무작위는 점을 하나 추가하고 Bottom-Flat과 Top-Flat으로 나눠그리기
-		if (tp[0].Position.Y >= tp[1].Position.Y) {
-			if (tp[0].Position.Y >= tp[2].Position.Y) {
+		if (tp[0].Position.Y > tp[1].Position.Y) {
+			// 0, 1, 2
+			if (tp[0].Position.Y > tp[2].Position.Y) {
 				// 0, 1, 2
-				if (tp[1].Position.Y >= tp[2].Position.Y) {
+				if (tp[1].Position.Y > tp[2].Position.Y) {
 					// 0, 1, 2
 				}
 				else {
@@ -371,36 +379,37 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 				}
 			}
 			else {
-				// 2, 0, 1
 				VertexData temp = tp[0];
 				tp[0] = tp[2];
 				tp[2] = tp[1];
 				tp[1] = temp;
 			}
+
 		}
 		else {
-			if (tp[0].Position.Y >= tp[2].Position.Y) {
-				// 1, 2, 0
-				VertexData temp = tp[0];
-				tp[0] = tp[1];
-				tp[1] = tp[2];
-				tp[2] = temp;
-				if (tp[1].Position.Y >= tp[2].Position.Y) {
-					// 1, 2, 0
-				}
-				else {
-					// 2, 1, 0
-					VertexData temp = tp[0];
-					tp[0] = tp[1];
-					tp[1] = temp;
-				}
+			// 1, 0, 2
+			VertexData temp = tp[0];
+			tp[0] = tp[1];
+			tp[1] = temp;
+
+			if (tp[1].Position.Y > tp[2].Position.Y) {
+				// 1, 0, 2
+
 			}
 			else {
-				// 1, 0, 2
-				VertexData temp = tp[1];
+				// 1, 2, 0
+				VertexData tem = tp[1];
 				tp[1] = tp[2];
-				tp[2] = temp;
+				tp[2] = tem;
+				if (tp[0].Position.Y < tp[1].Position.Y)
+				{
+					//2,1,0
+					VertexData tem = tp[0];
+					tp[0] = tp[1];
+					tp[1] = tem;
+				}
 			}
+
 		}
 
 		if (tp[0].Position.Y == tp[1].Position.Y) {
@@ -468,13 +477,94 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 		else {
 			// 헤론 공식
 			// sqr(s(s-a)(s-b)(s-c)) = 1/2bh
-			float aSide = sqrt((tp[0].Position.X - tp[1].Position.X) * 2 + (tp[0].Position.Y - tp[1].Position.Y) * 2);
+			/*float aSide = sqrt((tp[0].Position.X - tp[1].Position.X) * 2 + (tp[0].Position.Y - tp[1].Position.Y) * 2);
 			float bSide = (Math::Abs(tp[0].Position.X) + Math::Abs(tp[2].Position.X)) / (Math::Abs(tp[0].Position.Y) + Math::Abs(tp[2].Position.Y));
 			float cSide = (Math::Abs(tp[1].Position.Y) - Math::Abs(tp[2].Position.Y)) / (Math::Abs(tp[1].Position.X) - Math::Abs(tp[2].Position.X));
 			float sSide = (aSide + bSide + cSide) * 0.5f;
-			float height = (sqrt(sSide * (sSide - aSide) * (sSide - bSide) * (sSide - cSide))) * 0.5f * bSide;
-			
-		}
+			float height = (sqrt(sSide * (sSide - aSide) * (sSide - bSide) * (sSide - cSide))) * 0.5f * bSide;*/
 
+			VertexData temp[3];
+			float slopeMid = (tp[2].Position.X - tp[0].Position.X) / (tp[2].Position.Y - tp[0].Position.Y);
+			Vector3 midVec((tp[1].Position.Y - tp[0].Position.Y) * slopeMid + tp[0].Position.X, tp[1].Position.Y, true);
+
+			//Top - Flat
+			for (int i = 0; i < 3; i++)
+			{
+				temp[i] = tp[i];
+			}
+			temp[0].Position = midVec;
+
+			if (temp[0].Position.X > temp[1].Position.X)
+			{
+				VertexData temp1 = temp[0];
+				temp[0] = tp[1];
+				temp[1] = temp1;
+			}
+
+			//tp[2] tp[0] 기울기
+			float slopeLeft = (temp[0].Position.X - temp[2].Position.X) / (temp[0].Position.Y - temp[2].Position.Y);
+			//tp[2] tp[1] 기울기
+			float slopeRight = (temp[1].Position.X - temp[2].Position.X) / (temp[1].Position.Y - temp[2].Position.Y);
+
+			DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Green);
+			DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Green);
+			DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Green);
+
+			float y = temp[2].Position.Y;
+
+			while (y < temp[0].Position.Y) {
+				float leftX = (y - temp[2].Position.Y) * slopeLeft + temp[2].Position.X;
+				float rightX = (y - temp[2].Position.Y) * slopeRight + temp[2].Position.X;
+
+				ScreenPoint spLeft = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(leftX, y));
+				ScreenPoint spRight = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(rightX, y));
+
+				for (int x = spLeft.X; x <= spRight.X; x++) {
+					SetPixel(ScreenPoint(x, spLeft.Y), LinearColor::Green);
+				}
+				y += 0.5f;
+			}
+
+			// Bottom - Flat
+			for (int i = 0; i < 3; i++)
+			{
+				temp[i] = tp[i];
+			}
+			temp[2].Position = midVec;
+			if (temp[1].Position.Y == temp[2].Position.Y)
+			{
+				if (tp[2].Position.X > tp[1].Position.X)
+				{
+					VertexData temp1 = temp[1];
+					temp[1] = temp[2];
+					temp[2] = temp1;
+				}
+
+
+				slopeLeft = (temp[2].Position.X - temp[0].Position.X) / (temp[2].Position.Y - temp[0].Position.Y);
+				slopeRight = (temp[1].Position.X - temp[0].Position.X) / (temp[1].Position.Y - temp[0].Position.Y);
+
+				DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Green);
+				DrawLine(tp[1].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Green);
+				DrawLine(tp[0].Position.ToVector2(), tp[2].Position.ToVector2(), LinearColor::Green);
+
+				y = temp[0].Position.Y;
+
+				while (y > temp[2].Position.Y) {
+					float leftX = (y - temp[0].Position.Y) * slopeLeft + temp[0].Position.X;
+					float rightX = (y - temp[0].Position.Y) * slopeRight + temp[0].Position.X;
+
+					ScreenPoint spLeft = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(leftX, y));
+					ScreenPoint spRight = ScreenPoint::ToScreenCoordinate(ScreenSize, Vector2(rightX, y));
+
+
+
+					for (int x = spLeft.X; x <= spRight.X; x++) {
+						SetPixel(ScreenPoint(x, spLeft.Y), LinearColor::Green);
+					}
+					y -= 0.5f;
+				}
+			}
+		}
 	}
 }
