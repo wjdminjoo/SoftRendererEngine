@@ -120,7 +120,7 @@ void SoftRendererImpl2D::UpdateImpl(float DeltaSeconds)
 		0.f );
 	
 
-	Camera2D.GetTransfrom().AddPostion(deltaPostion);
+	Camera2D.GetTransform().AddPostion(deltaPostion);
 }
 
 void SoftRendererImpl2D::LoadResource()
@@ -156,6 +156,6 @@ void SoftRendererImpl2D::LoadScene()
 
 	player->GetTransform().SetPostion(Vector3::Zero);
 	player->GetTransform().SetScale(Vector3::One * 100);
-	Camera2D.GetTransfrom().SetPostion(Vector3::Zero);
+	Camera2D.GetTransform().SetPostion(Vector3::Zero);
 	
 }

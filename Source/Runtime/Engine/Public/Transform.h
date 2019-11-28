@@ -14,9 +14,9 @@ public:
 	void AddRotation(Vector3 InRotation) { Rotation += InRotation; }
 	void AddScale(Vector3 InScale) { Scale += InScale; }
 
-	Vector3 GetPosition() { return Position; }
-	Vector3 GetRotation() { return Rotation; }
-	Vector3 GetScale() { return Scale; }
+	Vector3 GetPosition() const { return Position; }
+	Vector3 GetRotation() const  { return Rotation; }
+	Vector3 GetScale() const  { return Scale; }
 	Matrix4x4 GetModelingMatrix() const;
 private:
 	Vector3 Position;
