@@ -8,6 +8,9 @@ SoftRendererImpl2D::SoftRendererImpl2D(SoftRenderer* InOwner)
 	RSI = InOwner->RSI.get();
 	ScreenSize = InOwner->CurrentScreenSize;
 	InputManager = InOwner->GetInputManager();
+
+	LoadResource();
+	LoadScene();
 }
 
 SoftRendererImpl2D::~SoftRendererImpl2D()
@@ -55,17 +58,44 @@ void SoftRendererImpl2D::RenderFrameImpl()
 
 	DrawGrid2D();
 
-	float sa, ca;
-	Math::GetSinCos(sa, ca, Angle);
+	for (const auto& g : Scene) {
+		Mesh* meshToRender = g->Getmesh();
+		int vertexCount = meshToRender->GetVertexCount();
+		int indexCount = meshToRender->GetIndexCount();
+
+		Vector4* meshVertexBuffer = meshToRender->GetVertices();
+		int* indexBuffuer = meshToRender->GetIndices();
+
+		VertexData* v = new VertexData[vertexCount];
+
+		for (int vi = 0; vi < vertexCount; ++vi) {
+			v[vi].Position = meshVertexBuffer[vi];
+		}
+
+		Matrix4x4 unitforMatrix[3] = {
+			g->GetTransform().GetModelingMatrix(),
+			Camera2D.GetViewMatrix(),
+			Matrix4x4()
+		};
+
+		RSI->SetUnitformMatrix(unitforMatrix);
+		RSI->SetVertexBuffer(v);
+		RSI->SetIndexBuffer(indexBuffuer);
+		RSI->DrawPrimitive(4, 6);
+	}
+
+
+	/*float sa, ca;
+	Math::GetSinCos(sa, ca, Angle); 
 
 	Matrix4x4 rotMat(Vector3(ca, sa, 0.f), Vector3(-sa, ca, 0.f), Vector4::UnitZ, Vector4::UnitW);
 
 	const int vertexCount = 4;
 	VertexData v[vertexCount] = {
-	 VertexData(rotMat * Vector4(-0.5f, -0.7f, 0.f) * 100.f, LinearColor::Red),
-	 VertexData(rotMat * Vector4(-0.7f, 0.9f, 0.f) * 100.f, LinearColor::Blue),
-	 VertexData(rotMat * Vector4(0.5f, 0.6f, 0.f) * 100.f, LinearColor::Green),
-	 VertexData(rotMat * Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
+	 VertexData(Vector4(-0.5f, -0.5f, 0.f) * 100.f, LinearColor::Black),
+	 VertexData(Vector4(-0.5f, 0.5f, 0.f) * 100.f, LinearColor::Black),
+	 VertexData(Vector4(0.5f, 0.5f, 0.f) * 100.f, LinearColor::Black),
+	 VertexData(Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
 	};
 
 	const int triangleCount = 2;
@@ -76,10 +106,56 @@ void SoftRendererImpl2D::RenderFrameImpl()
 
 	RSI->SetVertexBuffer(v);
 	RSI->SetIndexBuffer(i);
-	RSI->DrawPrimitive(4, 6);
+	RSI->DrawPrimitive(3, 3);*/
 }
 
 void SoftRendererImpl2D::UpdateImpl(float DeltaSeconds)
 {
-	Angle += (180.f * DeltaSeconds);
+	Angle += (180.f * DeltaSeconds * InputManager.GetXAxis());
+	const auto player = Scene[0].get();
+	const float moveSpeed = 100.f;
+	Vector3 deltaPostion = Vector3(InputManager.GetXAxis() * moveSpeed * DeltaSeconds, 
+		InputManager.GetYAxis() * moveSpeed * DeltaSeconds, 
+		0.f );
+	
+
+	player->GetTransform().AddPostion(deltaPostion);
+	Camera2D.GetViewMatrix();
+}
+
+void SoftRendererImpl2D::LoadResource()
+{
+
+	// FBX 데이터 로딩으로 가정.
+	const int vertexCount = 4;
+	const int triangleCount = 2;
+	const int indexCount = triangleCount * 3;
+
+	Vector4 v[vertexCount] = {
+	 Vector4(-0.5f, -0.5f, 0.f),
+	 Vector4(-0.5f, 0.5f, 0.f),
+	 Vector4(0.5f, 0.5f, 0.f),
+	 Vector4(0.5f, -0.5f, 0.f)
+	};
+
+	int i[indexCount] = {
+	 0, 2, 1, 0, 3, 2
+	};
+
+	// 메시에 넘기기
+	SharedMesh = std::make_unique<Mesh>();
+	SharedMesh->SetMesh(v, vertexCount, i, indexCount);
+}
+
+void SoftRendererImpl2D::LoadScene()
+{
+	GameObject* player = new GameObject();
+	Scene.emplace_back(player);
+
+	player->SetMesh(SharedMesh.get());
+
+	player->GetTransform().SetPostion(Vector3::Zero);
+	player->GetTransform().SetScale(Vector3::One * 100);
+	Camera2D.GetTransfrom().SetPostion(Vector3::Zero);
+	
 }

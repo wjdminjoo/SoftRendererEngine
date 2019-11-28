@@ -29,6 +29,7 @@ public:
 
 
 	virtual void DrawLine(const Vector2& InStartPos, const Vector2& InEndPos, const LinearColor& InColor) override;
+	virtual void SetUnitformMatrix(Matrix4x4* InMatrixData) override;
 	virtual void SetVertexBuffer(VertexData* InVertexData) override;
 	virtual void SetIndexBuffer(const int* InIndexData) override;
 	virtual void DrawPrimitive(UINT InVertexSize, UINT InIndexSize) override;
@@ -39,4 +40,8 @@ private:
 
 	VertexData* VertexBuffer = nullptr;
 	const int* IndexBuffer = nullptr;
+
+	Matrix4x4 ModelingMatrix;
+	Matrix4x4 ViewMatrix;
+	Matrix4x4 ProjectionMatrix;
 };

@@ -321,6 +321,13 @@ void WindowsRSI::DrawLine(const Vector2& InStartPos, const Vector2& InEndPos, co
 	//}
 }
 
+void WindowsRSI::SetUnitformMatrix(Matrix4x4 * InMatrixData)
+{
+	ModelingMatrix = InMatrixData[0];
+	ViewMatrix = InMatrixData[1];
+	ProjectionMatrix = InMatrixData[2];
+}
+
 void WindowsRSI::SetVertexBuffer(VertexData* InVertexData)
 {
 	VertexBuffer = InVertexData;
@@ -333,11 +340,15 @@ void WindowsRSI::SetIndexBuffer(const int* InIndexData)
 
 void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 {
-
+	Matrix4x4 FinalMatirx = ProjectionMatrix * ViewMatrix * ModelingMatrix;
 	const int triangleCount = InIndexSize / 3;
 
 	for (int i = 0; i < triangleCount; i++) {
 		VertexData tp[3] = { VertexBuffer[IndexBuffer[i * 3]], VertexBuffer[IndexBuffer[i * 3 + 1]], VertexBuffer[IndexBuffer[i * 3 + 2]] };
+
+		for (int pi = 0; pi < 3; ++pi) {
+			tp[pi].Position = FinalMatirx * tp[pi].Position;
+		}
 
 		ScreenPoint tPoint[4] = {
 			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[0].Position.ToVector2()),
@@ -345,6 +356,8 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[2].Position.ToVector2()),
 			ScreenPoint(0, 0)
 		};
+
+
 
 		if (tp[0].Position.Y == tp[1].Position.Y == tp[2].Position.Y) {
 			DrawLine(tp[0].Position.ToVector2(), tp[1].Position.ToVector2(), LinearColor::Black);
@@ -413,7 +426,6 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 
 		if (tp[0].Position.Y == tp[1].Position.Y) {
 			// Top-Flat Triangle
-
 			//tp[2] tp[0] 기울기
 			float slopeLeft = (tp[0].Position.X - tp[2].Position.X) / (tp[0].Position.Y - tp[2].Position.Y);
 			//tp[2] tp[1] 기울기
