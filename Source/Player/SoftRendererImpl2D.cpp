@@ -114,13 +114,13 @@ void SoftRendererImpl2D::UpdateImpl(float DeltaSeconds)
 	Angle += (180.f * DeltaSeconds * InputManager.GetXAxis());
 	const auto player = Scene[0].get();
 	const float moveSpeed = 100.f;
-	Vector3 deltaPostion = Vector3(InputManager.GetXAxis() * moveSpeed * DeltaSeconds, 
+	Vector3 deltaPostion = Vector3(
+		InputManager.GetXAxis() * moveSpeed * DeltaSeconds, 
 		InputManager.GetYAxis() * moveSpeed * DeltaSeconds, 
 		0.f );
 	
 
-	player->GetTransform().AddPostion(deltaPostion);
-	Camera2D.GetViewMatrix();
+	Camera2D.GetTransfrom().AddPostion(deltaPostion);
 }
 
 void SoftRendererImpl2D::LoadResource()
