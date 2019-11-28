@@ -62,16 +62,11 @@ void SoftRendererImpl2D::RenderFrameImpl()
 
 	const int vertexCount = 4;
 	VertexData v[vertexCount] = {
-	 VertexData(Vector4(0.5f, 0.5f, 0.f) * 10.f, LinearColor::Red),
-	 VertexData(Vector4(2.5f, -2.5f, 0.f) * 10.f, LinearColor::Blue),
-	 VertexData(Vector4(-2.5f, -2.5f, 0.f) * 10.f, LinearColor::Green),
-	 VertexData(Vector4(0.6f, -1.2f, 0.f) * 10.f, LinearColor::Black)
-	}; /*VertexData v[vertexCount] = {
 	 VertexData(rotMat * Vector4(-0.5f, -0.7f, 0.f) * 100.f, LinearColor::Red),
 	 VertexData(rotMat * Vector4(-0.7f, 0.9f, 0.f) * 100.f, LinearColor::Blue),
 	 VertexData(rotMat * Vector4(0.5f, 0.6f, 0.f) * 100.f, LinearColor::Green),
 	 VertexData(rotMat * Vector4(0.6f, -1.2f, 0.f) * 100.f, LinearColor::Black)
-	};*/
+	};
 
 	const int triangleCount = 2;
 	const int indexCount = triangleCount * 3;
@@ -81,7 +76,7 @@ void SoftRendererImpl2D::RenderFrameImpl()
 
 	RSI->SetVertexBuffer(v);
 	RSI->SetIndexBuffer(i);
-	RSI->DrawPrimitive(3, 3);
+	RSI->DrawPrimitive(4, 6);
 }
 
 void SoftRendererImpl2D::UpdateImpl(float DeltaSeconds)
