@@ -346,9 +346,42 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 	for (int i = 0; i < triangleCount; i++) {
 		VertexData tp[3] = { VertexBuffer[IndexBuffer[i * 3]], VertexBuffer[IndexBuffer[i * 3 + 1]], VertexBuffer[IndexBuffer[i * 3 + 2]] };
 
-		for (int pi = 0; pi < 3; ++pi) {
-			tp[pi].Position = FinalMatirx * tp[pi].Position;
+		for (int ti = 0; ti < 3; ti++)
+		{
+			tp[ti].Position = FinalMatirx * tp[ti].Position;
+			float invW = 1.f / tp[ti].Position.W;
+			tp[ti].Position.X *= invW;
+			tp[ti].Position.Y *= invW;
+			tp[ti].Position.Z *= invW;
 		}
+
+		//Backface culling
+		
+		Vector3 edge1 = (tp[1].Position - tp[0].Position).ToVector3();
+		Vector3 edge2 = (tp[2].Position - tp[0].Position).ToVector3();
+		Vector3 faceNormal = edge1.Cross(edge2).Normalize();
+		if (faceNormal.Dot(-Vector3::UnitZ) > 0.f)
+		{
+			continue;
+		}
+		/*Vector3 edge1 = (tp[1].Position - tp[0].Position).ToVector3();
+		Vector3 edge2 = (tp[2].Position - tp[0].Position).ToVector3();
+		Vector3 faceNormal = edge2.Cross(edge1).Normalize();
+		static Vector3 cameraDir = -Vector3::UnitZ;
+		if (cameraDir.Dot(faceNormal) < 0.f)
+		{
+			continue;
+		}*/
+
+
+		// Strech to ScreenSize
+		for (int ti = 0; ti < 3; ti++)
+		{
+			tp[ti].Position.X *= (ScreenSize.X * 0.5f);
+			tp[ti].Position.Y *= (ScreenSize.Y * 0.5f);
+		}
+
+		
 
 		ScreenPoint tPoint[4] = {
 			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[0].Position.ToVector2()),
@@ -356,6 +389,7 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 			ScreenPoint::ToScreenCoordinate(ScreenSize, tp[2].Position.ToVector2()),
 			ScreenPoint(0, 0)
 		};
+
 
 
 
@@ -421,10 +455,15 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 					tp[1] = tem;
 				}
 			}
-
 		}
 
 		if (tp[0].Position.Y == tp[1].Position.Y) {
+			if (tp[0].Position.X > tp[1].Position.X)
+			{
+				VertexData temp = tp[1];
+				tp[1] = tp[0];
+				tp[0] = temp;
+			}
 			// Top-Flat Triangle
 			//tp[2] tp[0] ±â¿ï±â
 			float slopeLeft = (tp[0].Position.X - tp[2].Position.X) / (tp[0].Position.Y - tp[2].Position.Y);

@@ -1,6 +1,5 @@
 #pragma once
 #include "Transform.h"
-
 class Camera
 {
 public:
@@ -8,7 +7,9 @@ public:
 
 public:
 	Transform& GetTransform() { return cameraTrans; }
-	Matrix4x4 GetViewMatrix() const;
+	Matrix4x4 GetViewMatrix(GameObject& InTargetObject) const;
+	Matrix4x4 GetProjectionMatrix(int InScreenSizeX, int InScreenSizeY) const;
+
 
 private:
 	Transform cameraTrans;

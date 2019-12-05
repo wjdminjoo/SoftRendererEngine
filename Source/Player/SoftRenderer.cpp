@@ -69,8 +69,8 @@ void SoftRenderer::OnResize(const ScreenPoint& InNewScreenSize)
 
 	if (IsImplBinded)
 	{
-		Impl2D.reset();
-		Impl2D = std::make_unique<SoftRendererImpl2D>(this);
+		Impl3D.reset();
+		Impl3D = std::make_unique<SoftRendererImpl3D>(this);
 	}
 }
 
@@ -126,14 +126,23 @@ void SoftRenderer::Update()
 	}
 }
 
+
 void SoftRenderer::BindImplClass()
 {
-	Impl2D = std::make_unique<SoftRendererImpl2D>(this);
+	/*Impl2D = std::make_unique<SoftRendererImpl2D>(this);
 	if (nullptr != Impl2D)
 	{
 		using namespace std::placeholders;
 		RenderFrameFunc = std::bind(&SoftRendererImpl2D::RenderFrameImpl, Impl2D.get());
 		UpdateFunc = std::bind(&SoftRendererImpl2D::UpdateImpl, Impl2D.get(), _1);
+		IsImplBinded = true;
+	}*/
+	Impl3D = std::make_unique<SoftRendererImpl3D>(this);
+	if (nullptr != Impl3D)
+	{
+		using namespace std::placeholders;
+		RenderFrameFunc = std::bind(&SoftRendererImpl3D::RenderFrameImpl, Impl3D.get());
+		UpdateFunc = std::bind(&SoftRendererImpl3D::UpdateImpl, Impl3D.get(), _1);
 		IsImplBinded = true;
 	}
 }
