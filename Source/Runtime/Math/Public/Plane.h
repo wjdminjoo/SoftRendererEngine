@@ -11,7 +11,10 @@ public:
 	Plane Normalize();
 	~Plane() {};
 
-private:
 	Vector3 Normal = Vector3::UnitY;
+	float GetD () const { return D; }
+
+private:
 	float D = 0.f;
+
 };

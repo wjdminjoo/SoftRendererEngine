@@ -6,8 +6,8 @@ public:
 	Transform() = default;
 
 public:
-	void SetPostion(Vector3 InPostion) { Position = InPostion; }
-	void SetRotaion(Vector3 InRotation);
+	void SetPosition(Vector3 InPostion) { Position = InPostion; }
+	void SetRotation(Vector3 InRotation);
 	void SetScale(Vector3 InScale) { Scale = InScale; }
 
 	void AddPostion(Vector3 InPostion) { Position += InPostion; }

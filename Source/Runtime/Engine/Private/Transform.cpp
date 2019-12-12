@@ -2,7 +2,7 @@
 #include "Precompiled.h"
 #include "Transform.h"
 
-void Transform::SetRotaion(Vector3 InRotation)
+void Transform::SetRotation(Vector3 InRotation)
 {
 	Rotation = InRotation;
 	CalcLocalAxis();

@@ -18,6 +18,7 @@ void Mesh::SetMesh(Vector4 * Vertices, int VertexCount, int * Indices, int Index
 		this->Indices[in] = Indices[in];
 	}
 
+	Sphere.CalcSphere(Vertices, VertexCount);
 }
 
 void Mesh::Release()

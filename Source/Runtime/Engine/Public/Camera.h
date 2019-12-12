@@ -9,7 +9,9 @@ public:
 	Transform& GetTransform() { return cameraTrans; }
 	Matrix4x4 GetViewMatrix(GameObject& InTargetObject) const;
 	Matrix4x4 GetProjectionMatrix(int InScreenSizeX, int InScreenSizeY) const;
-
+	float GetFov() const { return FOV; }
+	float GetNearZ() const { return NearZ; }
+	float GetFarZ() const { return FarZ; }
 
 private:
 	Transform cameraTrans;

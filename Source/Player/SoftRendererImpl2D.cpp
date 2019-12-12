@@ -154,8 +154,8 @@ void SoftRendererImpl2D::LoadScene()
 
 	player->SetMesh(SharedMesh.get());
 
-	player->GetTransform().SetPostion(Vector3::Zero);
+	player->GetTransform().SetPosition(Vector3::Zero);
 	player->GetTransform().SetScale(Vector3::One * 100);
-	Camera2D.GetTransform().SetPostion(Vector3::Zero);
+	Camera2D.GetTransform().SetPosition(Vector3::Zero);
 	
 }

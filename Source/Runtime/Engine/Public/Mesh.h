@@ -15,6 +15,8 @@ public:
 
 	Vector4* GetVertices() const { return Vertices; }
 	int* GetIndices() const { return Indices; }
+
+	BoundingShpere& GetBoundingSphere() { return Sphere; }
 private:
 
 	Vector4* Vertices = nullptr;
@@ -22,5 +24,6 @@ private:
 
 	int VertexCount = 0;
 	int IndexCount = 0;
+	BoundingShpere Sphere;
 };
 
